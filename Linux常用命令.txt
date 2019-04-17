@@ -1,0 +1,307 @@
+Linux  基础命令
+
+hy@hy:/mnt/hgfs/116/第一阶段/Linux基础命令$
+root@hy:/mnt/hgfs/116/第一阶段/Linux基础命令#
+
+@前面的当前登录用户名，后面的是主机名
+：后面的是当前工作目录
+
+$ 代表的是普通用户
+# 代表的是root用户 ，也就是超级用户
+
+
+1.获取联机帮助
+	man   commandname   完整的命令用法说明
+	
+	man -f commandname  查看在man手册的7页中哪几页出现了这个命令，并且每一页这个命令的功能分别是什么
+	
+	man 数字(1-7) commandname  查看man手册第几页中的commandname 
+	
+	info commandname  额外的帮助文档
+	退出用q(quit)  
+
+2.基本系统维护命令
+	reboot   重启
+	shutdown   -h  now  关机
+	shutdown   -t  秒数  过几秒后关机
+	shutdown  -r  重启
+	
+	shutdown  -h   12:00   
+	shutdown  -h  +10      再过十分钟自动关机
+	
+	halt  
+	poweroff  
+	
+	echo  "string"  把 字符串里面的内容显示在标准输出上
+	
+	echo  "string"  >> 文件名  将字符串内容输出到文件中，且以追加的形式写入
+	
+	date  日期 
+	
+	cal  显示日历
+	cal 数字    显示以数字作为年份的那一年的日历
+	cal 数字1 数字2   显示以数字2作为年份的那一年的数字1(月份)的日历
+	
+	uptime  显示系统已经运行多长时间
+	clear  清屏
+	history  
+	
+	！数字编号，再次执行那条命令
+	
+	who 显示在线登录用户
+	whoami 显示当前操作用户
+	hostname 显示主机名 
+	
+3.用户管理
+	/etc/passwd
+登录名  可选的加密后的密码   用户ID  用户组ID 用户名和注释字段   用户主目录   可选的用户命令解释器(如果字段为空，默认值是 /bin/sh)	
+pulse:x:115:122:PulseAudio daemon,,,:/var/run/pulse:/bin/false
+hy:x:1000:1000:hy,,,:/home/hy:/bin/bash
+guest-lDbVnv:x:116:125:Guest,,,:/tmp/guest-lDbVnv:/bin/bash
+
+
+如果passwd字段是一个小写的 'x',那么加密的密码实际上存储于 /etc/shadow 中， 否则用户账户无效 
+
+用户主目录：主目录字段提供了初始工作目录的名称，login程序根据此信息设置 $HOME 环境变量
+
+	/etc/group
+ 组名  加密的口令 GID  成员列表(以,分隔)	
+hy:x:1000:
+adm:x:4:syslog,hy     
+guest-lDbVnv:x:125:
+tftp:x:126:
+gec:x:1001:
+
+	adduser  username   增加一个用户 
+	passwd   username  修改用户密码
+	userdel  username  删除一个用户
+	groupdel   groupname  删除一个用户组
+	
+4. 进程管理
+		进程的状态标志
+		D：不可中断的静止
+		R：正在执行中
+		S：静止状态
+		T：暂停执行
+		W：没有足够的内存
+		Z：僵尸进程
+		< 高优先序的进程
+		N：低优先序的进程
+		L：有内存分页分配并锁在内存中
+		
+		ps(process status) - ef(every full)
+		查看进程ID号
+		
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 09:37 ?        00:00:01 /sbin/init
+
+C：进程生命周期中的CPU利用率
+STIME：进程启动时的系统时间
+TTY：进程启动时的终端设备
+TIME：运行进程需要的累积CPU时间
+CMD：启动的程序名称
+
+
+pstree：以进程树的形式查看各个进程的信息
+
+top：实时并且按CPU占用率的顺序查看各个进程的信息(实时显示)
+
+kill  发一个信号给特定的进程    
+kill -9   PID   杀死PID这个进程
+
+5. Linux 文件系统
+	boot  启动文件
+	dev  设备文件
+	mnt 临时挂载
+	root root用户的家目录
+	bin 系统程序
+	sbin 管理员系统程序
+	lib 系统程序库文件
+	etc 系统程序和大部分应用程序的全局配置文件
+	tmp 临时文件
+	/ 虚拟目录的根目录，通常这里是不会存放文件的
+	home：主目录，Linux在这里创建用户目录
+	opt：可选目录，通常在这里存放可选的软件包
+	usr：用户安装软件的目录
+	media：媒体目录，存放可移动媒体设备挂载点的地方
+	-lost+fount 磁盘修复文件
+	var 系统相关文档
+	
+6.文件系统原理
+	linux 树状结构的文件系统
+
+绝对路径：从根目录开始的路径
+相对路径：相对于当前工作目录的路径
+. 当前目录(默认)  .. 上一级目录   ~ 当前用户的家目录   / 根目录   - 上一次去到的地方
+pwd：显示当前目录的完整路径名
+cd：改变当前工作目录
+
+ls   list status  列出文件信息
+ls [options] 目录/文件
+	-l：把文件的详细信息列出来
+	-lh：人性化的将文件的详细信息列出来   ，文件大小的单位以实际情况为准
+	-a:将所有文件显示出来，包含隐藏文件(以.开头的文件)
+	-lt:以修改时间排序
+	
+	
+文件类型和权限   硬链接总数  用户  用户组  大小(默认是字节)  修改时间 	           文件名
+d rwx rwx --x 			2		hy 		  hy    4096  			1月 12 19:53 			桌面
+- rwx rwx r-x 1 hy   hy    7377  1月 11 16:11 a.out
+
+
+文件权限 r w x 
+u  g  o  
+
+
+文件类型
+- 普通文件 
+d：目录文件
+l：链接文件    link  
+b：块设备文件   block   device 
+p：管道文件    pipe/fifo
+c：字符设备文件   character  device
+s：套接字文件  socket  
+
+7. 权限管理命令
+	chmod(change the permission mode of a file)
+	
+	chmod  [{ugoa} {+-=} {rwx}]  [文件或是目录]
+	没有指定给谁，就给all；
+	
+	
+	chown   改变文件的属主 
+	
+	chown gec 66.txt   将文档66.txt 的属主改为 gec 
+	chown gec:gec hello.c  将文档hello.c 的属主和属组都更改为gec
+	
+	如果你的Linux系统采用和用户登录名匹配的组名，你可以只用一个条目就改变二者
+	chown gec. test.c
+	
+	chgrp   shared  newfile   改变文件newfile的用户组
+			[用户组]  [文件或是目录]
+			
+	su username  切换成username 用户
+	
+8.显示普通文件内容的命令
+	cat  文件名   把文件显示到标准输出上
+		-n 加上行号
+		-b 只给有文本的行加上行号
+		-s 将多个空白行压缩到单个空白行
+		
+	cat -b passwd > 1.txt   将passwd的非空白行的内容加上行号输出到1.txt
+	
+	tac  反向显示
+	
+	more ：分屏显示文件内容
+		回车键一行一行显示
+		空格键一屏一屏显示
+		ctrl+b返回上一屏
+		= 显示当前行在文件中的行号
+		:f 立刻显示出文件名和行号
+		+num 从第num行开始显示
+		
+	less ：more的升级版
+	能够使用翻页键和方向键
+	
+	
+	head 显示文件前十行内容
+		-num  显示文件前num行内容
+		-c num  显示文件前面前面num个字节
+			
+	tail 显示文件后十行的内容
+		
+	nl  [-bnw]  文件名
+	-b  指定行号
+		a： 空号也会列出行号
+		t：空的那一行不会列出行号
+	-n  列出行号表示的方式 
+		ln 表示行号靠左显示，且不加0
+		rn 表示行号靠右显示，且不加0
+		rz  表示行号靠右显示，加0
+		
+	-w num  从左开始第num-1个位置开始显示，行号占用num个位置
+		
+		
+9.常用的一些命令
+		cp  [options]  [source] [dest]
+		
+		source：  源文件  既可以是普通文件，也可以是目录
+		dest：目标文件  既可以是普通文件，也可以是目录
+		
+		options:
+			-r 递归地复制文件
+			-R 递归地复制目录
+			-f 强制拷贝
+			-p 保留文件属性
+			
+		mv  重名名  移动
+		 mv passwd  password   将passwd  重命名为 password
+		 
+		 mkdir  创建一个目录
+		 
+		 mkdir  AAA  在当前文件夹下创建一个文件夹AAA
+		 
+		 mkdir -p  AAA/BBB 在当前目录的子目录AAA下创建子目录BBB
+		 
+		 rmdir  删除空目录   ！删除非空目录，请使用 rm -rf  
+		 
+10.创建链接文件
+	硬链接 
+	ln target  link-name(.hard)
+	
+	软链接
+	ln -s target  link-name(.soft)
+	
+	
+	软链接是一个符号链接，软链接文件包含了另一个文件的路径名，可以是任意文件或是目录，可以链接不同文件系统的文件或是目录，在对符号文件
+	进行读和写操作时，系统会自动把操作转换为对源文件的操作，但是删除链接文件时，系统仅仅删除链接文件，而不删除文件本身
+	
+	
+	硬链接文件已存在另一个文件，不允许经目录创建硬链接，只有在同一个文件系统的文件之间才能创建硬链接，对硬链接文件进行读写和操作时结果和
+	软链接相同，但是如果删除硬链接文件的源文件，硬链接文件仍然存在，而且保留了原来的内容，这时，系统就忘记了他 曾经是一个硬链接文件，
+	而把它当成是一个普通文件
+	
+11.文件压缩和归档
+	Linux 最广泛使用的归档工具是tar命令    .tar
+	
+	tar  function [oprions] object1 object2
+	
+	function:
+		-A  将一个已有tar归档文件追加到弄一个已有tar归档文件
+		-c 	创建一个新的tar归档文件
+		-t  列出已有tar归档文件内容
+		-x  释放一个归档文件
+		
+	options
+	-C dir  切换到指定目录
+	-v  显示归档或是释放过程中的信息
+	-f  指定归档文件的名称
+	-j 由tar生成归档文件，然后由bzip进行压缩或是解压   bz2
+	-z 由tar生成归档文件，然后由gzip进行压缩或是解压   gz
+	
+	一般形式：
+	解压：tar xvf 文件名
+	压缩：tar czvf  **.tar.gz  文件名
+	
+	
+
+
+	
+	
+
+	
+	
+	
+
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
